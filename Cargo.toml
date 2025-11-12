@@ -1,12 +1,12 @@
 [package]
-name = "cratedocs-mcp"
-version = "0.2.0"
+name = "rust-cargo-docs-rag-mcp"
+version = "0.3.0"
 edition = "2021"
 description = "Rust Documentation MCP Server for LLM crate assistance"
 authors = ["Brian Horakh <brianh@promptexecution.com>",
 "Claude <noreply@anthropic.com>"]
 license = "MIT"
-repository = "https://github.com/d6e/cratedocs-mcp"
+repository = "https://github.com/promptexecution/rust-cargo-docs-rag-mcp"
 
 [workspace]
 members = [

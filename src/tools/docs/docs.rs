@@ -96,7 +96,7 @@ impl DocRouter {
 
         // Fetch the documentation page
         let response = self.client.get(&url)
-            .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/d6e/cratedocs-mcp)")
+            .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/promptexecution/rust-cargo-docs-rag-mcp)")
             .send()
             .await
             .map_err(|e| {
@@ -130,7 +130,7 @@ impl DocRouter {
         let url = format!("https://crates.io/api/v1/crates?q={}&per_page={}", query, limit);
         
         let response = self.client.get(&url)
-            .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/d6e/cratedocs-mcp)")
+            .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/promptexecution/rust-cargo-docs-rag-mcp)")
             .send()
             .await
             .map_err(|e| {
@@ -217,7 +217,7 @@ impl DocRouter {
             
             // Try to fetch the documentation page
             let response = match self.client.get(&url)
-                .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/d6e/cratedocs-mcp)")
+                .header("User-Agent", "CrateDocs/0.1.0 (https://github.com/promptexecution/rust-cargo-docs-rag-mcp)")
                 .send().await {
                 Ok(resp) => resp,
                 Err(e) => {
