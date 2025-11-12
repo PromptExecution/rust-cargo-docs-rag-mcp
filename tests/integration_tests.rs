@@ -1,4 +1,4 @@
-use cratedocs_mcp::{tools::DocRouter, transport::jsonrpc_frame_codec::JsonRpcFrameCodec};
+use rust_cargo_docs_rag_mcp::{tools::DocRouter, transport::jsonrpc_frame_codec::JsonRpcFrameCodec};
 use mcp_server::Router;
 use serde_json::{json, Value};
 use tokio_util::codec::Decoder;

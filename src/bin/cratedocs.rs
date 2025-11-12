@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use cratedocs_mcp::tools::DocRouter;
+use rust_cargo_docs_rag_mcp::tools::DocRouter;
 use mcp_core::Content;
 use mcp_server::router::RouterService;
 use mcp_server::{ByteTransport, Router, Server};
@@ -9,7 +9,7 @@ use std::net::SocketAddr;
 use tokio::io::{stdin, stdout};
 use tracing_appender::rolling::{RollingFileAppender, Rotation};
 use tracing_subscriber::{self, EnvFilter, layer::SubscriberExt, util::SubscriberInitExt};
-use cratedocs_mcp::tools::tldr;
+use rust_cargo_docs_rag_mcp::tools::tldr;
 
 #[derive(Parser)]
 #[command(author, version = "0.2.0", about, long_about = None)]
@@ -203,7 +203,7 @@ async fn run_http_server(address: String, debug: bool) -> Result<()> {
     tracing::info!("Access the Rust Documentation Server at http://{}/sse", addr);
     
     // Create app and run server
-    let app = cratedocs_mcp::transport::http_sse_server::App::new();
+    let app = rust_cargo_docs_rag_mcp::transport::http_sse_server::App::new();
     axum::serve(listener, app.router()).await?;
     
     Ok(())
@@ -367,11 +367,11 @@ async fn run_test_tool(config: TestToolConfig) -> Result<()> {
 
                 // If max_tokens is set, truncate output to fit within the limit
                 if let Some(max_tokens) = max_tokens {
-                    match cratedocs_mcp::tools::count_tokens(&content_str) {
+                    match rust_cargo_docs_rag_mcp::tools::count_tokens(&content_str) {
                         Ok(token_count) if token_count > max_tokens => {
                             // Truncate by character, then to previous word boundary, and append Mandarin to indicate truncation.
                             let mut truncated = content_str.clone();
-                            while cratedocs_mcp::tools::count_tokens(&truncated).map_or(0, |c| c) > max_tokens && !truncated.is_empty() {
+                            while rust_cargo_docs_rag_mcp::tools::count_tokens(&truncated).map_or(0, |c| c) > max_tokens && !truncated.is_empty() {
                                 truncated.pop();
                             }
                             if let Some(last_space) = truncated.rfind(' ') {
@@ -486,7 +486,7 @@ async fn run_test_tool(config: TestToolConfig) -> Result<()> {
 }
 #[cfg(test)]
 mod tldr_tests {
-    use cratedocs_mcp::tools::tldr::apply_tldr;
+    use rust_cargo_docs_rag_mcp::tools::tldr::apply_tldr;
 
     #[test]
     fn test_apply_tldr_removes_license_and_versions() {
