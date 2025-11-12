@@ -1,10 +1,12 @@
-FROM rust:1.91.1-alpine3.20 AS builder
+FROM rust:1.91.1-slim-bullseye AS builder
 
-RUN apk add --no-cache \
-    build-base \
-    pkgconfig \
-    openssl-dev \
-    git
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    git \
+    ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -19,9 +21,9 @@ COPY . .
 
 RUN cargo build --locked --release --bin cratedocs
 
-FROM alpine:3.20
+FROM debian:bullseye-slim
 
-RUN apk add --no-cache ca-certificates libgcc libstdc++ libssl3
+RUN apt-get update && apt-get install -y ca-certificates libssl1.1 && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/target/release/cratedocs /usr/local/bin/cratedocs
 COPY docker/entrypoint.sh /entrypoint.sh
