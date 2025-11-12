@@ -1,0 +1,21 @@
+distributable:
+  url: https://github.com/PromptExecution/rust-cargo-docs-rag-mcp/archive/refs/tags/v{{version}}.tar.gz
+  strip-components: 1
+
+provides:
+  - bin/cratedocs
+
+versions:
+  github: PromptExecution/rust-cargo-docs-rag-mcp/tags
+
+build:
+  dependencies:
+    rust-lang.org: '>=1.70'
+    rust-lang.org/cargo: '*'
+  script: |
+    cargo install --path . --root {{prefix}}
+
+test:
+  script: |
+    cratedocs version
+    cratedocs test --tool help
