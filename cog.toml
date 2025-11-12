@@ -1,0 +1,22 @@
+from_latest_tag = true
+ignore_merge_commits = true
+branch_whitelist = ["main"]
+
+[git]
+tag_prefix = "v"
+
+[changelog]
+path = "CHANGELOG.md"
+template = "remote"
+
+pre_bump_hooks = [
+  "./scripts/set-version.sh {{version}}"
+]
+
+post_bump_hooks = [
+  "git add Cargo.toml Cargo.lock CHANGELOG.md"
+]
+
+[[packages]]
+name = "rust-cargo-docs-rag-mcp"
+path = "."
