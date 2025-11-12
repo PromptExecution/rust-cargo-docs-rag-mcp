@@ -10,12 +10,31 @@
 
 ## Installation
 
+### Using Cargo (Standard)
+
 ```bash
 git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
 cd rust-cargo-docs-rag-mcp
 cargo build --release
 cargo install --path .
 ```
+
+### Using pkgx
+
+[pkgx](https://pkgx.dev) is a universal package manager that can build and run this project without requiring a system-wide Rust installation:
+
+```bash
+# Install using pkgx (automatically handles Rust dependencies)
+pkgx install
+
+# Or build directly with pkgx
+pkgx +rust +cargo cargo build --release
+
+# Run without installing
+pkgx +rust +cargo cargo run --bin cratedocs -- stdio
+```
+
+The project includes a `package.yml` file for pkgx integration, making it easy to build and test across different environments.
 
 ## Running the Server
 
