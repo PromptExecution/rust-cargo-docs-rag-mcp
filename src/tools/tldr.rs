@@ -14,12 +14,12 @@ pub fn apply_tldr(input: &str) -> String {
     let detail_tag_re = Regex::new(r"<[/]?detail.*?>").unwrap();
 
     for line in input.lines() {
-        // Start skipping if we hit a LICENSE or VERSION(S) heading
-        if !skip && tldr_section_re.is_match(line) {
+        // Check if this is a LICENSE or VERSION(S) heading
+        if tldr_section_re.is_match(line) {
             skip = true;
             continue; // skip the heading line itself
         }
-        // Stop skipping at the next heading (but do not skip the heading itself)
+        // Stop skipping at the next heading (that's not LICENSE/VERSION)
         if skip && heading_re.is_match(line) {
             skip = false;
         }
