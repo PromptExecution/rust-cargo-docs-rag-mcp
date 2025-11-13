@@ -240,6 +240,99 @@ in `mcp_settings.json`
 }
 ```
 
+### Using Docker with MCP
+
+You can use the Docker image directly in your MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "rust-crate-docs-docker": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:latest",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+Or if you want to run the HTTP/SSE server in Docker and connect via mcp-remote:
+
+```bash
+# Start the HTTP server in Docker
+docker run --rm -p 8080:8080 ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:latest
+```
+
+Then in `mcp_settings.json`:
+```json
+{
+  "mcpServers": {
+    "rust-crate-docs-docker-http": {
+      "command": "bunx",
+      "args": [
+        "-y",
+        "mcp-remote@latest",
+        "http://localhost:8080/sse",
+        "--allow-http",
+        "--transport", "sse-only"
+      ]
+    }
+  }
+}
+```
+
+### Using pkgx with MCP
+
+If you have [pkgx](https://pkgx.dev) installed, you can run the server without a system-wide Rust installation:
+
+```json
+{
+  "mcpServers": {
+    "rust-crate-docs-pkgx": {
+      "command": "pkgx",
+      "args": [
+        "+rust",
+        "+cargo",
+        "cargo",
+        "run",
+        "--manifest-path",
+        "/path/to/rust-cargo-docs-rag-mcp/Cargo.toml",
+        "--bin",
+        "cratedocs",
+        "--",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+Or use pkgx to install and run directly:
+
+```bash
+# Clone and install with pkgx
+git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
+cd rust-cargo-docs-rag-mcp
+pkgx +rust +cargo cargo install --path .
+```
+
+Then reference it normally in `mcp_settings.json`:
+```json
+{
+  "mcpServers": {
+    "rust-crate-docs": {
+      "command": "cratedocs",
+      "args": ["stdio"]
+    }
+  }
+}
+```
+
 
 
 ### 4. `list_crate_items`
