@@ -22,13 +22,13 @@ jobs:
           fetch-depth: 0
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Authenticate to GHCR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -40,7 +40,7 @@ jobs:
           echo "ref_name=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
 
       - name: Build and push multi-arch Docker image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
@@ -73,10 +73,14 @@ jobs:
           strip target/x86_64-unknown-linux-gnu/release/cratedocs || true
 
       - name: Build aarch64-unknown-linux-gnu release binary
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+          CC_aarch64_unknown_linux_gnu: aarch64-linux-gnu-gcc
+          CXX_aarch64_unknown_linux_gnu: aarch64-linux-gnu-g++
+          AR_aarch64_unknown_linux_gnu: aarch64-linux-gnu-ar
         run: |
-          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
           cargo build --locked --release --target aarch64-unknown-linux-gnu
-          strip target/aarch64-unknown-linux-gnu/release/cratedocs || true
+          aarch64-linux-gnu-strip target/aarch64-unknown-linux-gnu/release/cratedocs || true
 
       - name: Upload x86_64 binary to release
         uses: softprops/action-gh-release@v1

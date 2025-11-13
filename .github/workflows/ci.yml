@@ -33,11 +33,10 @@ jobs:
             ${{ runner.os }}-cargo-
 
       - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: 1.91.1
-          override: true
-          components: clippy, rustfmt
+        run: |
+          rustup toolchain install 1.91.1
+          rustup default 1.91.1
+          rustup component add clippy rustfmt
 
       - name: Show rustc & cargo versions
         run: |
