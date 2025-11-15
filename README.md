@@ -15,7 +15,23 @@ git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
 cd rust-cargo-docs-rag-mcp
 cargo build --release
 cargo install --path .
+# Or install the pkgx-managed binary and check its version
+just install-pkgx
 ```
+
+### Installing with pkgx
+
+The repository includes a mini [pkgx pantry](./pkgx) so you can build and run the CLI through `pkgx` without touching your global toolchain:
+
+```bash
+git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
+cd rust-cargo-docs-rag-mcp
+export PKGX_PANTRY_PATH=$PWD/pkgx
+export PKGX_PANTRY_DIR=$PWD/pkgx    # pkgx^2 compatibility
+pkgx cratedocs version
+```
+
+`pkgx` will download the tagged source tarball, compile `cratedocs` with the required Rust toolchain, and cache the result for subsequent runs. Once you're ready to upstream this package to the central [pkgx pantry](https://github.com/pkgxdev/pantry), copy `pkgx/projects/github.com/promptexecution/rust-cargo-docs-rag-mcp/package.yml` into a new PR there.
 
 ## Running the Server
 

@@ -28,6 +28,8 @@ COPY docker/entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
+LABEL io.modelcontextprotocol.server.name="io.github.promptexecution/rust-cargo-docs-rag-mcp"
+
 EXPOSE 8080
 
 ENV CRATEDOCS_MODE=http \

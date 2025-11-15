@@ -54,3 +54,43 @@ jobs:
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  publish-mcp:
+    needs: build-and-push
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MCP Publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" \
+            | tar xz mcp-publisher
+          chmod +x mcp-publisher
+
+      - name: Prepare server manifest
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          IMAGE_REPO=$(echo "${GITHUB_REPOSITORY}" | tr '[:upper:]' '[:lower:]')
+          IMAGE="ghcr.io/${IMAGE_REPO}:$VERSION"
+          jq --arg v "$VERSION" --arg image "$IMAGE" '
+            .version = $v
+            | .packages = (.packages // [] | map(
+                if .registryType == "oci" then
+                  (.identifier = $image)
+                else .
+                end
+                | (if has("version") then .version = $v else . end)
+              ))
+          ' server.json > server.publish.json
+          mv server.publish.json server.json
+
+      - name: Login to MCP Registry
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: ./mcp-publisher publish
