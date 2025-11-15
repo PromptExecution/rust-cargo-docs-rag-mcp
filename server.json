@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.promptexecution/rust-cargo-docs-rag-mcp",
+  "title": "Rust Cargo Docs RAG",
+  "description": "Lookup Rust crate and item documentation via docs.rs and crates.io search.",
+  "websiteUrl": "https://github.com/promptexecution/rust-cargo-docs-rag-mcp",
+  "repository": {
+    "url": "https://github.com/promptexecution/rust-cargo-docs-rag-mcp",
+    "source": "github"
+  },
+  "version": "0.3.0",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:0.3.0",
+      "runtimeHint": "docker",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "CRATEDOCS_MODE",
+          "value": "stdio",
+          "description": "Ensure the container exposes the MCP stdio transport when run by clients."
+        }
+      ]
+    }
+  ]
+}

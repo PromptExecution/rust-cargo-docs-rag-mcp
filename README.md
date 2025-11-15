@@ -1,6 +1,6 @@
 # Rust Cargo Docs RAG MCP
 
-`rust-cargo-docs-rag-mcp` is an MCP (Model Context Protocol) server that provides Rust crate documentation lookup and search tools intended for LLM assistants and other tooling.
+`rust-cargo-docs-rag-mcp` is an MCP (Model Context Protocol) server that provides tools for Rust crate documentation lookup. It allows LLMs to look up documentation for Rust crates they are unfamiliar with.
 
 This README focuses on how to build, version, release, and install the project using two common paths:
 1. pkgx (build/install locally from source)
@@ -10,6 +10,30 @@ This README focuses on how to build, version, release, and install the project u
 
 ## Release / Versioning workflow (maintainers)
 
+```bash
+git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
+cd rust-cargo-docs-rag-mcp
+cargo build --release
+cargo install --path .
+# Or install the pkgx-managed binary and check its version
+just install-pkgx
+```
+
+### Installing with pkgx
+
+The repository includes a mini [pkgx pantry](./pkgx) so you can build and run the CLI through `pkgx` without touching your global toolchain:
+
+```bash
+git clone https://github.com/promptexecution/rust-cargo-docs-rag-mcp.git
+cd rust-cargo-docs-rag-mcp
+export PKGX_PANTRY_PATH=$PWD/pkgx
+export PKGX_PANTRY_DIR=$PWD/pkgx    # pkgx^2 compatibility
+pkgx cratedocs version
+```
+
+`pkgx` will download the tagged source tarball, compile `cratedocs` with the required Rust toolchain, and cache the result for subsequent runs. Once you're ready to upstream this package to the central [pkgx pantry](https://github.com/pkgxdev/pantry), copy `pkgx/projects/github.com/promptexecution/rust-cargo-docs-rag-mcp/package.yml` into a new PR there.
+
+## Running the Server
 This repository is wired to Cocogitto via `cog.toml`. Typical flow to create a release:
 
 1. Install Cocogitto (once)
@@ -66,6 +90,32 @@ Run in stdio mode:
 docker run --rm -e CRATEDOCS_MODE=stdio -i ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:latest
 ```
 
+### Using Docker
+
+You can also build and run the server in an Alpine-based container. Prebuilt images are automatically published to GHCR via [`.github/workflows/docker.yml`](.github/workflows/docker.yml):
+
+```bash
+docker pull ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:latest
+```
+
+To build locally (useful before pushing to another registry):
+
+```bash
+# Build the image (adjust the tag to match your registry)
+docker build -t promptexecution/rust-cargo-docs-rag-mcp .
+
+# Run HTTP/SSE mode on port 8080
+docker run --rm -p 8080:8080 promptexecution/rust-cargo-docs-rag-mcp
+```
+
+Configuration is controlled through environment variables:
+- `CRATEDOCS_MODE` (default `http`): switch to `stdio` to expose the stdio MCP server
+- `CRATEDOCS_ADDRESS` (default `0.0.0.0:8080`): bind the HTTP server to a specific interface/port
+- `CRATEDOCS_DEBUG` (default `false`): set to `true` to enable verbose logging in HTTP mode
+
+All additional arguments appended to `docker run ... -- <args>` are forwarded to the underlying `cratedocs` process.
+
+### Directly Testing Documentation Tools
 ### Environment Variables
 
 - `CRATEDOCS_MODE` (default: `http`) — set to `stdio` to run the stdio MCP server
@@ -396,6 +446,17 @@ Then reference it normally in `mcp_settings.json`:
 - Results are returned as plain text/HTML content that can be parsed and presented by the client
 
 ---
+
+## Versioning & Releases
+
+This repository includes a [`cog.toml`](./cog.toml) profile wired to [`scripts/set-version.sh`](./scripts/set-version.sh) so [Cocogitto](https://github.com/cocogitto/cocogitto) can bump the crate version and regenerate the changelog automatically.
+
+Typical release flow:
+1. `cargo install cocogitto` (once)
+2. `cog bump minor` (or `patch`/`major`) – this updates `Cargo.toml`, `Cargo.lock`, and `CHANGELOG.md`
+3. Review the generated changelog, run tests, and push the resulting tag/commit
+
+See [`CHANGELOG.md`](./CHANGELOG.md) for the latest published versions.
 
 ## License
 
