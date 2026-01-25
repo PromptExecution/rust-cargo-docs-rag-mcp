@@ -449,6 +449,8 @@ Then reference it normally in `mcp_settings.json`:
 
 ## Versioning & Releases
 
+For detailed versioning and release instructions (including the Cocogitto workflow), see the **Release / Versioning workflow (maintainers)** section above.
+
 This repository includes a [`cog.toml`](./cog.toml) profile wired to [`scripts/set-version.sh`](./scripts/set-version.sh) so [Cocogitto](https://github.com/cocogitto/cocogitto) can bump the crate version and regenerate the changelog automatically.
 
 Typical release flow:
