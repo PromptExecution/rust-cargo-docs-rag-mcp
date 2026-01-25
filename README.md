@@ -449,13 +449,9 @@ Then reference it normally in `mcp_settings.json`:
 
 ## Versioning & Releases
 
+For detailed versioning and release instructions (including the Cocogitto workflow), see the **Release / Versioning workflow (maintainers)** section above.
+
 This repository includes a [`cog.toml`](./cog.toml) profile wired to [`scripts/set-version.sh`](./scripts/set-version.sh) so [Cocogitto](https://github.com/cocogitto/cocogitto) can bump the crate version and regenerate the changelog automatically.
-
-Typical release flow:
-1. `cargo install cocogitto` (once)
-2. `cog bump minor` (or `patch`/`major`) – this updates `Cargo.toml`, `Cargo.lock`, and `CHANGELOG.md`
-3. Review the generated changelog, run tests, and push the resulting tag/commit
-
 See [`CHANGELOG.md`](./CHANGELOG.md) for the latest published versions.
 
 ## License
