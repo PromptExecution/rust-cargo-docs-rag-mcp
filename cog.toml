@@ -14,7 +14,7 @@ pre_bump_hooks = [
 ]
 
 post_bump_hooks = [
-  "git add Cargo.toml Cargo.lock CHANGELOG.md"
+  "git add Cargo.toml Cargo.lock server.json CHANGELOG.md"
 ]
 
 [[packages]]

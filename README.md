@@ -73,11 +73,11 @@ Repository requirements:
 
 Prebuilt images are published to GitHub Container Registry (GHCR) on release tags.
 
-Pull the image (replace OWNER with the GH org or username that owns the repo; tags look like v0.3.0):
+Pull the image (replace OWNER with the GH org or username that owns the repo; tags look like v0.3.1):
 ```bash
 docker pull ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:latest
 # or a specific version:
-docker pull ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:v0.3.0
+docker pull ghcr.io/promptexecution/rust-cargo-docs-rag-mcp:v0.3.1
 ```
 
 Run the container in HTTP mode (default):

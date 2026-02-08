@@ -7,7 +7,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -34,10 +34,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Determine tag name
-        id: tag
+      - name: Resolve release version and image repository
+        id: version
         run: |
-          echo "ref_name=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          CRATE_VERSION=$(sed -nE 's/^version = "([^"]+)"/\1/p' Cargo.toml | head -n1)
+          if [ -z "${CRATE_VERSION}" ]; then
+            echo "::error::Could not determine crate version from Cargo.toml"
+            exit 1
+          fi
+
+          RELEASE_TAG="v${CRATE_VERSION}"
+          IMAGE_REPO="ghcr.io/${GITHUB_REPOSITORY,,}"
+
+          echo "crate_version=${CRATE_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
+          echo "image_repo=${IMAGE_REPO}" >> "$GITHUB_OUTPUT"
+
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "${RELEASE_TAG}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match Cargo.toml version ${CRATE_VERSION} (expected ${RELEASE_TAG})"
+            exit 1
+          fi
 
       - name: Build and push multi-arch Docker image
         uses: docker/build-push-action@v6
@@ -47,8 +63,9 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/rust-cargo-docs-rag-mcp:${{ steps.tag.outputs.ref_name }}
-            ghcr.io/${{ github.repository_owner }}/rust-cargo-docs-rag-mcp:latest
+            ${{ steps.version.outputs.image_repo }}:${{ steps.version.outputs.release_tag }}
+            ${{ steps.version.outputs.image_repo }}:${{ steps.version.outputs.crate_version }}
+            ${{ steps.version.outputs.image_repo }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -56,7 +73,8 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.tag.outputs.ref_name }}
+          tag_name: ${{ steps.version.outputs.release_tag }}
+          target_commitish: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
