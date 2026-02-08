@@ -50,3 +50,21 @@ if not updated:
 
 path.write_text("\n".join(out_lines) + "\n")
 PY
+
+# Update server.json version and OCI package tag
+python3 - "$version" <<'PY'
+import json, pathlib, sys
+version = sys.argv[1]
+path = pathlib.Path("server.json")
+data = json.loads(path.read_text())
+data["version"] = version
+
+for pkg in data.get("packages", []):
+    if pkg.get("registryType") != "oci":
+        continue
+    ident = pkg.get("identifier")
+    if isinstance(ident, str) and ":" in ident:
+        pkg["identifier"] = f"{ident.rsplit(':', 1)[0]}:{version}"
+
+path.write_text(json.dumps(data, indent=2) + "\n")
+PY
