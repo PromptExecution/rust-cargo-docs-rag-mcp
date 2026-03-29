@@ -174,6 +174,10 @@ cratedocs http --address 127.0.0.1:8080 --debug
 
 ---
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/promptexecution-cratedocs-mcp).
+
 ## Features
 
 - **Lookup crate documentation**: Get general documentation for a Rust crate
