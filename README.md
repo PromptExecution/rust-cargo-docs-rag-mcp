@@ -1,3 +1,17 @@
+> ## ⚠️ Archived / sunset (2026-08-04)
+>
+> This project is no longer actively developed. Development focus has moved to
+> [b00t](https://github.com/elasticdotventures/_b00t_), and specifically to
+> **[PromptExecution/rust-docs-mcp-b00t](https://github.com/PromptExecution/rust-docs-mcp-b00t)**
+> — our fork of **[Govcraft/rust-docs-mcp-server](https://github.com/Govcraft/rust-docs-mcp-server)**,
+> which we support upstream and send patches back to.
+>
+> If you're looking for a Rust crate-docs MCP server, use one of those two instead
+> of this repo. This repo is kept around (archived, read-only) for reference —
+> the Docker/GHCR image approach documented below worked, but we consolidated on
+> the Govcraft-lineage tool rather than maintaining two independent implementations.
+
+---
 # Rust Cargo Docs RAG MCP
 
 `rust-cargo-docs-rag-mcp` is an MCP (Model Context Protocol) server that provides tools for Rust crate documentation lookup. It allows LLMs to look up documentation for Rust crates they are unfamiliar with.
